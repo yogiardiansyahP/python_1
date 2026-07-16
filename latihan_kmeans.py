@@ -3,8 +3,11 @@ import seaborn as sns
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 import matplotlib.pyplot as plt
-
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
 from sklearn.cluster import KMeans
+
+file = pd.read_csv("dataset.handphone.csv")
 
 gaji = np.array([
     [1,3],
@@ -70,3 +73,24 @@ df=pd.DataFrame({
 df["Total_pembelian/jumlah_transaksi"] = df["Total_pembelian"] / df["jumlah_transaksi"]
 
 print(df)
+
+x =  file [['Ram']]
+y = file [['Rating_pengguna']]
+
+X_train,X_test,y_train,y_test= train_test_split(x,y, test_size=0.2,random_state=100)
+
+model = LinearRegression()
+model.fit(X_train, y_train)
+# Prediksi
+y_pred = model.predict(X_test)
+# Menampilkan koefisien
+print("Koefisien:", model.coef_)
+print("Intercept:", model.intercept_)
+# Visualisasi
+plt.scatter (x, y, color='blue', label='Data Aktual') # Scatter plot data aktual
+plt.plot(x, model.predict(x), color='red', label='Garis Regresi') # Garis regresi
+plt.xlabel('Ram')
+plt.ylabel('Rating_pengguna')
+plt.title('Regresi Linear: Ram vs Rating')
+plt.legend()
+plt.show()

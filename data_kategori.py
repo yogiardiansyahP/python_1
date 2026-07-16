@@ -6,6 +6,7 @@ from scipy.stats import boxcox
 from sklearn.preprocessing import OrdinalEncoder
 from sklearn.preprocessing import PowerTransformer
 from sklearn.feature_extraction.text import TfidfVectorizer
+from textblob import TextBlob
 
 
 file = pd.read_csv("dataset.handphone.csv")
@@ -97,11 +98,21 @@ df["Resolusi_kamera"] = df["Spek_hp"].dt.unit
 
 print(df)
 
-text_data = ["saya suka belajar machine learning",
-             "machine learning sangat menarik",
-             "saya ingin  memahami  lebih dalam  tentang machine learning"]
+text_data = ["I like learning machine learning", 
+"machine learning is very interesting", 
+"I want to understand more deeply about machine learning"]
 
 vectorizer = TfidfVectorizer()
 tfidf_matrix = vectorizer.fit_transform(text_data)
 df_tfidf = pd.DataFrame(tfidf_matrix.toarray(),columns=vectorizer.get_feature_names_out())
+
+
+sentiments = [TextBlob(review).sentiment.polarity for review in text_data]
+
+df_sentiment = pd.DataFrame({
+    "Review": text_data,
+    "Sentiment Score": sentiments
+})
+
+print(df_sentiment)
 print(df_tfidf)

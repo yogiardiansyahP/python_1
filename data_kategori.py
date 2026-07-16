@@ -98,15 +98,22 @@ df["Resolusi_kamera"] = df["Spek_hp"].dt.unit
 
 print(df)
 
-text_data = ["I like learning machine learning", 
-"machine learning is very interesting", 
-"I want to understand more deeply about machine learning"]
+text_data = [
+    "I like learning machine learning",
+    "machine learning is very interesting",
+    "I want to understand more deeply about machine learning"
+]
 
+# TF-IDF
 vectorizer = TfidfVectorizer()
 tfidf_matrix = vectorizer.fit_transform(text_data)
-df_tfidf = pd.DataFrame(tfidf_matrix.toarray(),columns=vectorizer.get_feature_names_out())
 
+df_tfidf = pd.DataFrame(
+    tfidf_matrix.toarray(),
+    columns=vectorizer.get_feature_names_out()
+)
 
+# Analisis Sentimen dengan TextBlob
 sentiments = [TextBlob(review).sentiment.polarity for review in text_data]
 
 df_sentiment = pd.DataFrame({
@@ -114,5 +121,25 @@ df_sentiment = pd.DataFrame({
     "Sentiment Score": sentiments
 })
 
+print("Data Sentimen")
 print(df_sentiment)
+
+print("\nTF-IDF")
 print(df_tfidf)
+
+# Fungsi memberi label sentimen
+def label_sentimen(text):
+    text = text.lower()
+
+    if "like" in text or "interesting" in text:
+        return "Positif"
+    elif "doesnt" in text or "don't" in text or "dont" in text:
+        return "Negatif"
+    else:
+        return "Netral"
+
+# Menambahkan label sentimen
+df_sentiment["Sentimen"] = df_sentiment["Review"].apply(label_sentimen)
+
+print("\nHasil Akhir")
+print(df_sentiment)

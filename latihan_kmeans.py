@@ -75,7 +75,7 @@ df["Total_pembelian/jumlah_transaksi"] = df["Total_pembelian"] / df["jumlah_tran
 print(df)
 
 x =  file [['Ram']]
-y = file [['Rating_pengguna']]
+y = file [['Harga']]
 
 X_train,X_test,y_train,y_test= train_test_split(x,y, test_size=0.2,random_state=100)
 
@@ -90,7 +90,38 @@ print("Intercept:", model.intercept_)
 plt.scatter (x, y, color='blue', label='Data Aktual') # Scatter plot data aktual
 plt.plot(x, model.predict(x), color='red', label='Garis Regresi') # Garis regresi
 plt.xlabel('Ram')
-plt.ylabel('Rating_pengguna')
-plt.title('Regresi Linear: Ram vs Rating')
+plt.ylabel('Harga')
+plt.title('Regresi Linear: Ram vs Harga')
+plt.legend()
+plt.show()
+
+
+
+data1 = pd.DataFrame({
+'luas_tanah': [100, 200, 300, 400, 500, 600, 700, 800, 900, 1000],
+'jumlah_kamar': [2, 3, 3, 4, 5, 3, 4, 5, 6, 7],
+'harga': [300, 400, 500, 600, 700, 550, 650, 750, 850, 950] # Harga dalam juta
+})
+# Variabel independen (X) dan variabel dependen (y)
+X = data1[['luas_tanah', 'jumlah_kamar']]
+y = data1['harga']
+# Membagi data menjadi 80% training dan 20% testing
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
+random_state=42)
+
+model = LinearRegression()
+model.fit(X_train, y_train)
+#Prediksi harga rumah pada data uji
+y_pred = model.predict(X_test)
+# Menampilkan koefisien regresi
+print("Koefisien:", model.coef_)
+print("Intercept:", model.intercept_)
+#Scatter plot: hubungan luas tanah dengan harga rumah.
+plt.figure(figsize=(8,5))
+plt.scatter(data1['luas_tanah'], data1['harga'], color='blue', label='data1 Aktual') # data1 asli
+plt.plot(data1['luas_tanah'], model.predict(data1[['luas_tanah', 'jumlah_kamar']]), color='red', label='Garis Regresi') # Garis regresi
+plt.xlabel('Luas Tanah')
+plt.ylabel('Harga Rumah')
+plt.title('Regresi Linear: Luas Tanah & Jumlah Kamar vs Harga')
 plt.legend()
 plt.show()

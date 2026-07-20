@@ -19,6 +19,7 @@ from sklearn.metrics import (
 file = pd.read_csv("Mental_Health.csv")
 print(file.describe())
 print(file.dtypes)
+print(file.info())
 
 print(file.isnull().sum())
 
@@ -101,3 +102,4 @@ plt.xlabel("Predicted Label")
 plt.ylabel("True Label")
 
 plt.show()
+

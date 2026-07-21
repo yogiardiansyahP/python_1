@@ -1,6 +1,7 @@
 import pandas as pd
 import seaborn as sns
 from sklearn.model_selection import train_test_split
+
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 import matplotlib.pyplot as plt
@@ -43,6 +44,34 @@ file["gender"] = le.fit_transform(file["gender"])
 file["platform_usage"] = le.fit_transform(file["platform_usage"])
 file["social_interaction_level"] = le.fit_transform(file["social_interaction_level"])
 
+file["total_screen_time"] = (
+    file["daily_social_media_hours"] +
+    file["screen_time_before_sleep"]
+)
+
+
+file["sleep_deficit"] = (
+    8 - file["sleep_hours"]
+).clip(lower=0)
+
+
+file["activity_ratio"] = (
+    file["physical_activity"] /
+    (file["daily_social_media_hours"] + 1)
+)
+
+print(file[
+    [
+        "daily_social_media_hours",
+        "screen_time_before_sleep",
+        "total_screen_time",
+        "sleep_hours",
+        "sleep_deficit",
+        "physical_activity",
+        "activity_ratio"
+    ]
+].head())
+
 scaler = MinMaxScaler()
 
 file[["age","daily_social_media_hours"]] = scaler.fit_transform(
@@ -69,7 +98,11 @@ X = file.drop("depression_label", axis=1)
 y = file["depression_label"]
 
 X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
+    X,
+    y,
+    test_size=0.2,
+    random_state=42,
+    stratify=y
 )
 model = LogisticRegression(max_iter=1000)
 model.fit(X_train, y_train)
@@ -103,3 +136,8 @@ plt.ylabel("True Label")
 
 plt.show()
 
+
+plt.figure(figsize=(10, 8))
+sns.heatmap(file.corr(numeric_only=True), annot=True, cmap="coolwarm", fmt=".2f")
+plt.title("Correlation Heatmap")
+plt.show()
